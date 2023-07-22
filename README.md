@@ -39,3 +39,8 @@ sudo service mongod status
 mongo
 quit
 ```
+
+# Run Application
+```
+uvicorn main:app --reload
+```

@@ -11,7 +11,7 @@ import hashlib
 
 app = FastAPI()
 
-mongo_host = 'localhost'
+mongo_host = "localhost"
 mongo_port = 27017
 
 # Connect to MongoDB
@@ -19,62 +19,67 @@ client = MongoClient(host=mongo_host, port=mongo_port, serverSelectionTimeoutMS=
 db = client["stop_and_search_reports"]
 public_report_collection = db["reports"]
 
+
 class LocationInput(BaseModel):
     latitude: str
     longitude: str
     address: str
     country: str
 
+
 class PoliceBadgeInfo(BaseModel):
     badge_number: str
     officer: str
 
+
 class VictimReports(BaseModel):
-    report_type: str                        # "victim"
-    date: Union[str, datetime]              # "get_date" | datetime
-    location: Union[str, LocationInput]     # "get_location" | LocationInput
-    victims_involved: str                   # 1 | 2 | 3 ... 10+
-    reason: str                             # drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
-    visible_police: str                     # 1-2 | 3-4 | 5-6 | 6+
-    type_of_search: str                     # moderate | aggressive
-    police_badge: List[PoliceBadgeInfo]     # PoliceBadgeInfo
-    outcome: str                            # unknown | ongoing | resolved | no further action
-    age: str                                # prefer not to say | below 15 | 15-17 | 18-24 | 25-30 | 31-35 | 35+
-    sex: str                                # prefer not to say | male | female | non-binary | trans
-    race: str                               # prefer not to say | black | white | arab | south asain | east asain
-    notes: str                              # (optional)
-    supporting_evidence: List[UploadFile]   # (optional)
-    email: str                              # (optional) - hashed for security
- 
+    report_type: str  # "victim"
+    date: Union[str, datetime]  # "get_date" | datetime
+    location: Union[str, LocationInput]  # "get_location" | LocationInput
+    victims_involved: str  # 1 | 2 | 3 ... 10+
+    reason: str  # drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
+    visible_police: str  # 1-2 | 3-4 | 5-6 | 6+
+    type_of_search: str  # moderate | aggressive
+    police_badge: List[PoliceBadgeInfo]  # PoliceBadgeInfo
+    outcome: str  # unknown | ongoing | resolved | no further action
+    age: str  # prefer not to say | below 15 | 15-17 | 18-24 | 25-30 | 31-35 | 35+
+    sex: str  # prefer not to say | male | female | non-binary | trans
+    race: str  # prefer not to say | black | white | arab | south asain | east asain
+    notes: str  # (optional)
+    supporting_evidence: List[UploadFile]  # (optional)
+    email: str  # (optional) - hashed for security
+
 
 class WitnessReports(BaseModel):
-    report_type: str                        # "witness"
-    relation: str                           # known | unknown
-    date: Union[str, datetime]              # get_date | datetime
-    location: Union[str, LocationInput]     # get_location | LocationInput
-    victims_involved: str                   # 1 | 2 | 3 ... 10+
-    reason: str                             # drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
-    visible_police: str                     # 1-2 | 3-4 | 5-6 | 6+
-    type_of_search: str                     # moderate | aggressive
-    police_badge: List[PoliceBadgeInfo]     # PoliceBadgeInfo
-    outcome: str                            # unknown | ongoing | resolved | no further action
-    victim_description: str                 # yes | no
-    age: str                                # I don't know | below 15 | 15-17 | 18-24 | 25-30 | 31-35 | 35+
-    sex: str                                # I don't know | male | female 
-    race: str                               # I don't know | black | white | arab | south asain | east asain
-    notes: str                              # (optional)
-    supporting_evidence: List[UploadFile]   # (optional)
-    email: str                              # (optional) - hashed for security
+    report_type: str  # "witness"
+    relation: str  # known | unknown
+    date: Union[str, datetime]  # get_date | datetime
+    location: Union[str, LocationInput]  # get_location | LocationInput
+    victims_involved: str  # 1 | 2 | 3 ... 10+
+    reason: str  # drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
+    visible_police: str  # 1-2 | 3-4 | 5-6 | 6+
+    type_of_search: str  # moderate | aggressive
+    police_badge: List[PoliceBadgeInfo]  # PoliceBadgeInfo
+    outcome: str  # unknown | ongoing | resolved | no further action
+    victim_description: str  # yes | no
+    age: str  # I don't know | below 15 | 15-17 | 18-24 | 25-30 | 31-35 | 35+
+    sex: str  # I don't know | male | female
+    race: str  # I don't know | black | white | arab | south asain | east asain
+    notes: str  # (optional)
+    supporting_evidence: List[UploadFile]  # (optional)
+    email: str  # (optional) - hashed for security
+
 
 class PartialWitnessReport(BaseModel):
     location: Union[str, LocationInput]
-    victims_involved: str 
+    victims_involved: str
     visible_police: str
     type_of_search: str
     police_badge: List[PoliceBadgeInfo]
     notes: str
     supporting_evidence: List[UploadFile]
-    
+
+
 def get_user_location(request: Request) -> LocationInput:
     """get user's location via their IP address"""
     ip = request.client.host
@@ -89,6 +94,7 @@ def get_user_location(request: Request) -> LocationInput:
         country=location.raw["address"].get("country", ""),
     )
 
+
 @app.get("/")
 async def hello_world():
     post = "hello world"
@@ -96,13 +102,18 @@ async def hello_world():
         return post
     else:
         raise HTTPException(status_code=404, detail="Post not found")
-    
+
+
 # Create a union type of WitnessReports and VictimReports
 VictimOrWitnessReport = Union[WitnessReports, VictimReports]
 
 
 @app.post("/create-report")
-async def create_report(report: VictimOrWitnessReport, request: Request, supporting_evidence: List[UploadFile] = File(...)):
+async def create_report(
+    report: VictimOrWitnessReport,
+    request: Request,
+    supporting_evidence: List[UploadFile] = File(...),
+):
     report_data = jsonable_encoder(report)
     if report_data["email"]:
         hashed_email = hashlib.sha256(report_data["email"].encode()).hexdigest()
@@ -115,7 +126,9 @@ async def create_report(report: VictimOrWitnessReport, request: Request, support
             if location_data is not None:
                 report_data["location"] = LocationInput(**location_data)
             else:
-                raise HTTPException(status_code=500, detail="Failed to get user location")
+                raise HTTPException(
+                    status_code=500, detail="Failed to get user location"
+                )
         supporting_evidence_urls = []
         for file in supporting_evidence:
             file_content = await file.read()
@@ -134,7 +147,9 @@ async def create_report(report: VictimOrWitnessReport, request: Request, support
             if location_data is not None:
                 report_data["location"] = LocationInput(**location_data)
             else:
-                raise HTTPException(status_code=500, detail="Failed to get user location")
+                raise HTTPException(
+                    status_code=500, detail="Failed to get user location"
+                )
         supporting_evidence_urls = []
         for file in supporting_evidence:
             file_content = await file.read()
@@ -156,33 +171,37 @@ async def create_report(report: VictimOrWitnessReport, request: Request, support
 
 @app.get("/witness-reports", response_model=List[PartialWitnessReport])
 async def get_partial_witness_reports():
-    partial_witness_report = public_report_collection.find({}, {
-        "date": 1,
-        "location": 1,
-        "victims_involved": 1,
-        "visible_police": 1,
-        "type_of_search": 1,
-        "police_badge": 1,
-        "notes": 1,
-        "supporting_evidence": 1
-    })
+    partial_witness_report = public_report_collection.find(
+        {},
+        {
+            "date": 1,
+            "location": 1,
+            "victims_involved": 1,
+            "visible_police": 1,
+            "type_of_search": 1,
+            "police_badge": 1,
+            "notes": 1,
+            "supporting_evidence": 1,
+        },
+    )
     return list(partial_witness_report)
+
 
 @app.get("/witness-reports/{report_id}", response_model=WitnessReports)
 async def get_full_witness_report(report_id: str):
-    full_witness_report = public_report_collection.find_one({
-        "_id": ObjectId(report_id)
-    })
+    full_witness_report = public_report_collection.find_one(
+        {"_id": ObjectId(report_id)}
+    )
     if full_witness_report:
         return full_witness_report
     else:
         raise HTTPException(status_code=404, detail="Report not found")
 
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    
-    
-    
+
+
 """reports
 - report type: witness or victim
 - relation to victim: known to victim or unknown to victim (if witness)
