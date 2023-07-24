@@ -8,12 +8,19 @@
     <form method="post">
         <input type="text" name="title" placeholder="Title">
         <textarea name="content" placeholder="Content"></textarea>
+        <label for="use_current_time">Use Current Time and Date:</label>
+        <input type="checkbox" id="use_current_time" name="use_current_time" value="true">
+        <br>
+        <label for="date">Date (Optional):</label>
+        <input type="datetime-local" id="date" name="date">
+        <br>
         <input type="submit" value="Create Post">
     </form>
     {% for post in posts %}
         <div>
             <h2>{{ post.title }}</h2>
             <p>{{ post.content }}</p>
+            <p>{{ post.date }}</p>
         </div>
     {% endfor %}
 </body>
