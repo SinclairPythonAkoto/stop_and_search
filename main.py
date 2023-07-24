@@ -37,7 +37,7 @@ class VictimReports(BaseModel):
     date: Union[str, datetime]  # "get_date" | datetime
     location: Union[str, LocationInput]  # "get_location" | LocationInput
     victims_involved: str  # 1 | 2 | 3 ... 10+
-    reason: str  # drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
+    reason: str  # I don't know | drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
     visible_police: str  # 1-2 | 3-4 | 5-6 | 6+
     type_of_search: str  # moderate | aggressive
     police_badge: List[PoliceBadgeInfo]  # PoliceBadgeInfo
@@ -56,7 +56,7 @@ class WitnessReports(BaseModel):
     date: Union[str, datetime]  # get_date | datetime
     location: Union[str, LocationInput]  # get_location | LocationInput
     victims_involved: str  # 1 | 2 | 3 ... 10+
-    reason: str  # drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
+    reason: str  # I don't know | drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
     visible_police: str  # 1-2 | 3-4 | 5-6 | 6+
     type_of_search: str  # moderate | aggressive
     police_badge: List[PoliceBadgeInfo]  # PoliceBadgeInfo
@@ -112,7 +112,6 @@ VictimOrWitnessReport = Union[WitnessReports, VictimReports]
 async def create_report(
     report: VictimOrWitnessReport,
     request: Request,
-    supporting_evidence: List[UploadFile] = File(...),
 ):
     report_data = jsonable_encoder(report)
     if report_data["email"]:
@@ -129,14 +128,14 @@ async def create_report(
                 raise HTTPException(
                     status_code=500, detail="Failed to get user location"
                 )
-        supporting_evidence_urls = []
-        for file in supporting_evidence:
-            file_content = await file.read()
-            file_path = f"supporting_evidence/{file.filename}"
-            with open(file_path, "wb") as f:
-                f.write(file_content)
-            supporting_evidence_urls.append(file_path)
-        report_data["supporting_evidence"] = supporting_evidence_urls
+        # supporting_evidence_urls = []
+        # for file in supporting_evidence:
+        #     file_content = await file.read()
+        #     file_path = f"supporting_evidence/{file.filename}"
+        #     with open(file_path, "wb") as f:
+        #         f.write(file_content)
+        #     supporting_evidence_urls.append(file_path)
+        # report_data["supporting_evidence"] = supporting_evidence_urls
         result = public_report_collection.insert_one(report_data)
         collection_type = "witnesses"
     elif isinstance(report, VictimReports):
@@ -150,14 +149,14 @@ async def create_report(
                 raise HTTPException(
                     status_code=500, detail="Failed to get user location"
                 )
-        supporting_evidence_urls = []
-        for file in supporting_evidence:
-            file_content = await file.read()
-            file_path = f"supporting_evidence/{file.filename}"
-            with open(file_path, "wb") as f:
-                f.write(file_content)
-            supporting_evidence_urls.append(file_path)
-        report_data["supporting_evidence"] = supporting_evidence_urls
+        # supporting_evidence_urls = []
+        # for file in supporting_evidence:
+        #     file_content = await file.read()
+        #     file_path = f"supporting_evidence/{file.filename}"
+        #     with open(file_path, "wb") as f:
+        #         f.write(file_content)
+        #     supporting_evidence_urls.append(file_path)
+        # report_data["supporting_evidence"] = supporting_evidence_urls
         result = public_report_collection.insert_one(report_data)
         collection_type = "victims"
     else:
