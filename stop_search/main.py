@@ -1,8 +1,11 @@
 # backend
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from pydantic import BaseModel
-from pymongo import MongoClient
-from typing import List
+from pymongo import MongoClient, errors
+from typing import List, Dict, Union
+from datetime import datetime
+from geopy.geocoders import Nominatim
+import hashlib
 
 app = FastAPI()
 
@@ -15,6 +18,35 @@ class Post(BaseModel):
     title: str
     content: str
     date: str = None # Date will be empty string format
+
+class LocationInput(BaseModel):
+    latitude: str
+    longitude: str
+    address: str
+    country: str = "UK"
+
+class PoliceBadgeInfo(BaseModel):
+    badge_number: str
+    officer: str
+
+class VictimReports(BaseModel):
+    report_type: str  # "victim"
+    date: str  # "datetime"
+    location: Union[str, LocationInput]  # "get_location" | LocationInput
+    victims_involved: str  # 1 | 2 | 3 ... 10+
+    reason: str  # I don't know | drugs | weapon | stolen property | something to commit a crime | suspect serious violence | carrying a weapon or have used one | in specific location/area
+    visible_police: str  # 1-2 | 3-4 | 5-6 | 6+
+    type_of_search: str  # moderate | aggressive
+    police_badge: List[str]  # PoliceBadgeInfo
+    outcome: str  # unknown | ongoing | resolved | no further action
+    age: str = None # prefer not to say | below 15 | 15-17 | 18-24 | 25-30 | 31-35 | 35+
+    sex: str = None  # prefer not to say | male | female | non-binary | trans
+    race: str = None # prefer not to say | black | white | arab | south asain | east asain
+    notes: str = None  # (optional)
+    supporting_evidence: List[UploadFile] = None  # (optional)
+    email: str = None  # (optional) - hashed for security
+
+
 
 @app.post("/posts/", response_model=Post)
 def create_post(post: Post):
@@ -89,4 +121,30 @@ class PartialWitnessReport(BaseModel):
     notes: str
     supporting_evidence: List[UploadFile]
 
+
+def get_user_location(request: Request) -> LocationInput:
+    '''get user's location via their IP address'''
+    ip = request.client.host
+    geolocator = Nominatim(user_agent="location_tracker")
+    location = geolocator.geocode(ip)
+    if location is None:
+        return None
+    return LocationInput(
+        latitude=str(location.latitude),
+        longitude=str(location.longitude),
+        address=location.address,
+        country=location.raw["address"].get("country", ""),
+    )
+
+ elif isinstance(report, VictimReports):
+        if report_data["date"] == "get_date":
+            report_data["date"] = datetime.now()
+        if report_data["location"] == "get_location":
+            location_data = get_user_location(request)
+            if location_data is not None:
+                 report_data["location"] = LocationInput(**location_data)
+            else:
+                raise HTTPException(
+                    status_code=500, detail="Failed to get user location"
+                )
 """

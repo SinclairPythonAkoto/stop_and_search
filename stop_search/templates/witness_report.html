@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<header class="w3-container w3-red w3-center" style="padding:128px 16px">
+    <h1 class="w3-margin w3-jumbo">WITNESS REPORT</h1>
+    <p class="w3-xlarge">Anonymously report any encounter you have witnessed, where you feel the police were profiling, or their behaviour was unreasonable.</p>
+    <br>
+    <h2 class="w3-xxlarge flash-text">REMEMBER TO ASK FOR THEIR BADGE NUMBER!!</h2>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="w3-padding-large">
+    <form method="post" action="/victim">
+        <label for="use_current_time">Use current time and date:</label>
+        <input type="checkbox" id="use_current_time" name="use_current_time" value="true">
+        <br>
+        <label for="date">Date <b>(Optional)</b>:</label>
+        <input type="datetime-local" id="date" name="date">
+        <br>
+        <label for="use_current_location">Use current location: </label>
+        <input type="checkbox" id="use_current_location" name="use_current_location" value="true">
+        <p>
+            Enter the address location of the incident <b>(Optional)</b>
+            <div>
+                <input type="text" placeholder="Street name..." id="streetname" name="streetname">
+                <input type="text" placeholder="Town or City..." id="town_city" name="town_city">
+                <input type="text" placeholder="Postcode..." id="postcode" name="postcode">  
+            </div>
+        </p>
+    </form>
+</div>
+{% endblock %}

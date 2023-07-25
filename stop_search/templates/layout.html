@@ -21,6 +21,19 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
     font-size: 126px; /* You can adjust this value to make the gavel bigger or smaller */
     color: black; 
   }
+  .flash-text {
+    animation: flash 2s infinite;
+  }
+
+  @keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .required-asterisk {
+    color: red;
+    margin-left: 5px;
+  }
 </style>
 {% block style%}{% endblock %}
 </head>
@@ -30,19 +43,19 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 <div class="w3-top">
   <div class="w3-bar w3-blue w3-card w3-left-align w3-large">
     <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-red w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-blue">Home</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">I'm a Victim</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">I'm a Witness</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">Know My Rights</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">Search Map</a>
+    <a href="/" class="w3-bar-item w3-button w3-padding-large w3-blue">Home</a>
+    <a href="/victim" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">I'm a Victim</a>
+    <a href="/witness" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">I'm a Witness</a>
+    <a href="/my-rights" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">Know My Rights</a>
+    <a href="/map" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-red">Search Map</a>
   </div>
 
   <!-- Navbar on small screens -->
   <div id="navDemo" class="w3-bar-block w3-blue w3-hide w3-hide-large w3-hide-medium w3-large">
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-red">Victim</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-red">Witness</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-red">My Rights</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-red">Map</a>
+    <a href="/victim" class="w3-bar-item w3-button w3-padding-large w3-hover-red">Victim</a>
+    <a href="/witness" class="w3-bar-item w3-button w3-padding-large w3-hover-red">Witness</a>
+    <a href="/my-rights" class="w3-bar-item w3-button w3-padding-large w3-hover-red">My Rights</a>
+    <a href="/map" class="w3-bar-item w3-button w3-padding-large w3-hover-red">Map</a>
   </div>
 </div>
 
@@ -74,6 +87,15 @@ function myFunction() {
     x.className = x.className.replace(" w3-show", "");
   }
 }
+// JavaScript to add and remove the 'flash-text' class to create the flashing effect
+window.onload = function () {
+  const h2Element = document.querySelector(".flash-text");
+
+  setInterval(function () {
+    h2Element.classList.toggle("flash-text");
+  }, 2000); // Toggle the class every 2 seconds (2000ms)
+};
+// add an extra police badge number
 </script>
 
 </body>

@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<header class="w3-container w3-red w3-center" style="padding:128px 16px">
+    <h1 class="w3-margin w3-jumbo">VICTIM REPORT</h1>
+    <p class="w3-xlarge">Anonymously report an encounter you have had with the police where you feel you have been profiled, or unjustly treated.</p>
+    <br>
+    <h2 class="w3-xxlarge flash-text">DON'T BE AFRAID TO ASK FOR THEIR BADGE NUMBER!!</h2>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="w3-padding-large">
+    <form method="post" action="/victim" enctype="multipart/form-data">
+        <label for="use_current_time">Use current time and date: </label>
+        <input type="checkbox" id="use_current_time" name="use_current_time" value="true">
+        <br>
+        <label for="date">Date <b>(Optional)</b>:</label>
+        <input type="datetime-local" id="date" name="date">
+        <br>
+        <label for="use_current_location">Use current location: </label>
+        <input type="checkbox" id="use_current_location" name="use_current_location" value="true">
+        <p>
+            Enter the address location of the incident <b>(Optional)</b>
+            <div>
+                <input type="text" placeholder="Street name..." id="streetname" name="streetname">
+                <input type="text" placeholder="Town or City..." id="town_city" name="town_city">
+                <input type="text" placeholder="Postcode..." id="postcode" name="postcode">  
+            </div>
+        </p>
+        <label for="victims_involved">Victims involved <span class="required-asterisk">*</span></label>
+        <select id="number_of_victims_dropdown" name="victims_involved" required>
+            <option>Please select</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="10+">10+</option>
+            <option value="15+">15+</option>
+        </select>
+        <br>
+        <label for="reason">Why did they stop you? <span class="required-asterisk">*</span></label>
+        <select id="reason_for_stop" name="reason" required>
+            <option>Please select</option>
+            <option value="not_known">I don't know</option>
+            <option disabled>A police officer has powers to stop and search you if they have ‘reasonable grounds’ to suspect you’re carrying:</option>
+            <option value="drugs">suspision of drugs</option>
+            <option value="weapon">suspision of carrying a weapon</option>
+            <option value="stolen">suspision of carrying stolen property</option>
+            <option value="commit_crime">suspision of using something to commit a crime</option>
+            <option disabled>You can only be stopped and searched without reasonable grounds if it has been approved by a senior police officer. They have to then supect that:</option>
+            <option value="serious_violence">suspision of serious violnce</option>
+            <option value="carrying_or_used_weapon">carrying now or used a weapon in the past</option>
+            <option value="specific_location">in a specific location where crime is high</option>
+        </select>
+        <br>
+        <label for="visbile_police">How many police could you see? <span class="required-asterisk">*</span></label>
+        <select id="how_many_police" name="visbile_police" required>
+            <option>Please select</option>
+            <option value="1-2">1 - 2</option>
+            <option value="3-4">3 - 4</option>
+            <option value="5-6">5 - 6</option>
+            <option value="6+">6+</option>
+            <option value="10+">10+</option>
+            <option value="15+">15+</option>
+            <option value="over_20">over 20</option>
+        </select>
+        <br>
+        <label for="type_of_search">Type os search? <span class="required-asterisk">*</span></label>
+        <select id="search_type" name="type_of_search" required>
+            <option>Please select</option>
+            <option value="moderate">moderate</option>
+            <option value="aggressive">aggressive</option>
+        </select>
+        <br>
+        <label for="police_badge">Did you get their badge number?<label>
+        <div id="police-info">
+            <label for="police_officer_badge">Officer:</label>
+            <input type="text" id="police_officer_badge" name="police_officer_badge" placeholder="BADGE NUMBER">
+            <input type="text" id="officer_name" name="officer_name" placeholder="PC NAME">
+            <input type="text" id="police_station" name="police_station" placeholder="POLICE STATION">
+        </div>
+        <br>
+        <label for="outcome">What happened at the end? <span class="required-asterisk">*</span></label>
+        <select id="final_outcome" name="outcome" required>
+            <option>Please select</option>
+            <option value="unknown">unknown</option>
+            <option value="ongoing">ongoing</option>
+            <option value="resolved">resolved</option>
+            <option value="no_further_action">no further action</option>
+        </select>
+        <br>
+        <label for="victim_age">Age:</label>
+        <select id="victim_age" name="victim_age">
+            <option>Please select</option>
+            <option value="below_15">below 15</option>
+            <option value="15-17">15 - 17</option>
+            <option value="18-24">18 - 24</option>
+            <option value="25-30">25 - 30</option>
+            <option value="31-35">31 - 35</option>
+            <option value="35+">35+</option>
+            <option value="40+">40+</option>
+            <option value="45+">45+</option>
+            <option value="50+">50+</option>
+        </select>
+        <br>
+        <label for="victim_sex">Sex</label>
+        <select id="victim_sex" name="victim_sex">
+            <option>Please select</option>
+            <option value="male">male<option>
+            <option value="female">female<option>
+            <option value="non_binary">non-binary<option>
+            <option value="trans">trans<option>
+        </select>
+        <br>
+        <label for="victim_race">Race</label>
+        <select id="victim_race" name="victim_race">
+            <option>Please select</option>
+            <option value="arab">arab<option>
+            <option value="asain">asain<option>
+            <option value="black">black<option>
+            <option value="mixed">mixed<option>
+            <option value="white">white<option>
+        </select>
+        <br>
+        <label for="victim_notes">Notes</label>
+        <textarea name="victim_notes" placeholder="Write anything you want to add here.."></textarea>
+        <br>
+        <p><b>Supporting evidence</b>
+            <br>
+            Please upload any photos or videos you have. This could be used to build a case against abusive officers.
+            <label for="pic_file">Upload Photo:</label>
+            <input type="file" id="pic_file" name="pic_file" multiple>
+            <br>
+
+            <label for="video_file">Upload video:</label>
+            <input type="file" id="video_file" name="video_file" multiple>
+            <br>
+            <p>Please enter your email if you want a copy of your report.</p>
+            <label>Email</label>
+            <input type="text" name="victim_email" placeholder="Enter your email..">
+        </p>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}
